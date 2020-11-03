@@ -40,11 +40,9 @@ class Animation {
         }.bind(this);
         window.requestAnimationFrame(this.loop);
 
-        this.renderer.domElement.addEventListener('mousemove', (ev) => {
-            this.camera.rotation.y = ev.offsetX/100;
-        }, true);
-
         this.addTerrain();
+
+        /*Controls*/
         
         const mouseLookController = new MouseLookController(this.camera);
         const canvas = this.renderer.domElement;
