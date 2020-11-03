@@ -73,6 +73,8 @@ class Animation {
             backward: false,
             left: false,
             right: false,
+            up: false,
+            down: false,
             speed: 0.01
         };
 
@@ -86,6 +88,10 @@ class Animation {
                 move.left = true;
             } else if (ev.key === 'd') {
                 move.right = true;
+            } else if (ev.key === 'z') {
+                move.down = true;
+            } else if(ev.key === 'x') {
+                move.up = true;
             }
         }, true);
 
@@ -99,6 +105,10 @@ class Animation {
                 move.right = false;
             } else if (ev.key === 'a') {
                 move.left = false;
+            } else if (ev.key === 'z') {
+                move.down = false;
+            } else if(ev.key === 'x') {
+                move.up = false;
             }
         }, true);
 
@@ -128,6 +138,14 @@ class Animation {
 
             if (move.backward) {
                 velocity.z += moveSpeed;
+            }
+
+            if(move.up) {
+                velocity.y += moveSpeed;
+            }
+
+            if(move.down) {
+                velocity.y -= moveSpeed;
             }
 
             // update controller rotation.
