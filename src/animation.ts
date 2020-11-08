@@ -4,7 +4,7 @@ import Entity from './entity'
 import { forEachChild } from 'typescript';
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
-import { Mesh, Vector3 } from 'three';
+import { Mesh, PCFSoftShadowMap, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
 
 class Animation {
@@ -17,7 +17,7 @@ class Animation {
     constructor() {
         this.scene = new THREE.Scene();
         let width = window.innerWidth;
-        let height = window.innerHeight - 200; 
+        let height = window.innerHeight; 
         this.camera = new THREE.PerspectiveCamera( 50, width / height, 0.1, 1000 );
         this.camera.position.z = 50;
 
@@ -42,6 +42,7 @@ class Animation {
 
         this.addTerrain();
 
+        
         /*Controls*/
         
         const mouseLookController = new MouseLookController(this.camera);
