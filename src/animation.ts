@@ -4,37 +4,38 @@ import Entity from './entity'
 import { forEachChild } from 'typescript';
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
-import { Mesh, PCFSoftShadowMap, Vector3 } from 'three';
+import { Mesh, PCFSoftShadowMap, RepeatWrapping, TextureLoader, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
+import TextureSplattingMaterial from './terrain/SplattingMaterial';
 
 class Animation {
     private scene: THREE.Scene;
     private camera: THREE.Camera;
     private renderer: THREE.WebGLRenderer;
     private loop: (timestamp: number) => void;
-    private entities:Entity[] = [];
+    private entities: Entity[] = [];
 
     constructor() {
         this.scene = new THREE.Scene();
         let width = window.innerWidth;
-        let height = window.innerHeight; 
-        this.camera = new THREE.PerspectiveCamera( 50, width / height, 0.1, 1000 );
+        let height = window.innerHeight;
+        this.camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
         this.camera.position.z = 50;
 
         this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setSize( width, height );
-        this.renderer.setClearColor (0x202050, 1);
-        
-        document.body.appendChild( this.renderer.domElement );
+        this.renderer.setSize(width, height);
+        this.renderer.setClearColor(0x202050, 1);
 
-        let light = new THREE.PointLight( 0xffffff, 10, 100 );
-        light.position.set( 50, 50, 50 );
-        this.scene.add( light );
+        document.body.appendChild(this.renderer.domElement);
+
+        let light = new THREE.PointLight(0xffffff, 10, 100);
+        light.position.set(50, 50, 50);
+        this.scene.add(light);
 
         new Skybox(this.scene);
-        
+
         let self = this;
-        this.loop = function(time:number) {
+        this.loop = function (time: number) {
             self.draw(time);
             requestAnimationFrame(self.loop);
         }.bind(this);
@@ -42,9 +43,9 @@ class Animation {
 
         this.addTerrain();
 
-        
+
         /*Controls*/
-        
+
         const mouseLookController = new MouseLookController(this.camera);
         const canvas = this.renderer.domElement;
 
@@ -91,7 +92,7 @@ class Animation {
                 move.right = true;
             } else if (ev.key === 'z') {
                 move.down = true;
-            } else if(ev.key === 'x') {
+            } else if (ev.key === 'x') {
                 move.up = true;
             }
         }, true);
@@ -108,7 +109,7 @@ class Animation {
                 move.left = false;
             } else if (ev.key === 'z') {
                 move.down = false;
-            } else if(ev.key === 'x') {
+            } else if (ev.key === 'x') {
                 move.up = false;
             }
         }, true);
@@ -141,11 +142,11 @@ class Animation {
                 velocity.z += moveSpeed;
             }
 
-            if(move.up) {
+            if (move.up) {
                 velocity.y += moveSpeed;
             }
 
-            if(move.down) {
+            if (move.down) {
                 velocity.y -= moveSpeed;
             }
 
@@ -173,18 +174,32 @@ class Animation {
         const heightmapImage = await Utilities.loadImage('resources/volcano.png');
         const width = 100;
         const terrainGeometry = new TerrainBufferGeometry(heightmapImage, width, 128, 20);
-        let terrainMesh = new Mesh(terrainGeometry, new THREE.MeshLambertMaterial());
+        const grassTexture = new TextureLoader().load('resources/grass_02.png');
+        grassTexture.wrapS = RepeatWrapping;
+        grassTexture.wrapT = RepeatWrapping;
+        grassTexture.repeat.set(5000 / width, 5000 / width);
+
+        const snowyRockTexture = new TextureLoader().load('resources/snowy_rock_01.png');
+        snowyRockTexture.wrapS = RepeatWrapping;
+        snowyRockTexture.wrapT = RepeatWrapping;
+        snowyRockTexture.repeat.set(1500 / width, 1500 / width);
+
+        const splatMap = new TextureLoader().load('resources/volcano.png');
+
+        const terrainMaterial = new TextureSplattingMaterial(0xffffff, 0, [grassTexture, snowyRockTexture], [splatMap]);
+    
+        let terrainMesh = new Mesh(terrainGeometry, terrainMaterial);
         this.scene.add(terrainMesh);
         terrainMesh.translateY(-5);
     }
 
-    addEntity(entity:Entity) {
+    addEntity(entity: Entity) {
         this.scene.add(entity.mesh);
         this.entities.push(entity);
     }
 
-    draw(time:number) {
-        this.renderer.render( this.scene, this.camera );
+    draw(time: number) {
+        this.renderer.render(this.scene, this.camera);
 
         this.entities.forEach((e) => {
             e.update(time)
