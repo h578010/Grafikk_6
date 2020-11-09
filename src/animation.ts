@@ -7,6 +7,7 @@ import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
 import { Mesh, PCFSoftShadowMap, RepeatWrapping, TextureLoader, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
 import TextureSplattingMaterial from './terrain/SplattingMaterial';
+import { Controller } from './controls/controller';
 
 class Animation {
     private scene: THREE.Scene;
@@ -14,6 +15,7 @@ class Animation {
     private renderer: THREE.WebGLRenderer;
     private loop: (timestamp: number) => void;
     private entities: Entity[] = [];
+    private controller: Controller;
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -26,6 +28,8 @@ class Animation {
         this.renderer.setSize(width, height);
         this.renderer.setClearColor(0x202050, 1);
 
+        this.controller = new Controller(this.camera, this.renderer.domElement);
+
         document.body.appendChild(this.renderer.domElement);
 
         let light = new THREE.PointLight(0xffffff, 10, 100);
@@ -34,140 +38,18 @@ class Animation {
 
         new Skybox(this.scene);
 
+        let then = performance.now(); 
+
         let self = this;
         this.loop = function (time: number) {
             self.draw(time);
+            let now = performance.now();
+            self.controller.update(now-then);
+            then = now;
             requestAnimationFrame(self.loop);
         }.bind(this);
         window.requestAnimationFrame(this.loop);
-
         this.addTerrain();
-
-
-        /*Controls*/
-
-        const mouseLookController = new MouseLookController(this.camera);
-        const canvas = this.renderer.domElement;
-
-        canvas.addEventListener('click', () => {
-            canvas.requestPointerLock();
-        });
-
-        let yaw = 0;
-        let pitch = 0;
-        const mouseSensitivity = 0.001;
-
-        function updateCameraRotation(event: { movementX: number; movementY: number; }) {
-            yaw += event.movementX * mouseSensitivity;
-            pitch += event.movementY * mouseSensitivity;
-        }
-
-        document.addEventListener('pointerlockchange', () => {
-            if (document.pointerLockElement === canvas) {
-                canvas.addEventListener('mousemove', updateCameraRotation, false);
-            } else {
-                canvas.removeEventListener('mousemove', updateCameraRotation, false);
-            }
-        });
-
-        let move = {
-            forward: false,
-            backward: false,
-            left: false,
-            right: false,
-            up: false,
-            down: false,
-            speed: 0.01
-        };
-
-        window.addEventListener('keydown', (ev) => {
-            ev.preventDefault;
-            if (ev.key === 'w') {
-                move.forward = true;
-            } else if (ev.key === 's') {
-                move.backward = true;
-            } else if (ev.key === 'a') {
-                move.left = true;
-            } else if (ev.key === 'd') {
-                move.right = true;
-            } else if (ev.key === 'z') {
-                move.down = true;
-            } else if (ev.key === 'x') {
-                move.up = true;
-            }
-        }, true);
-
-        window.addEventListener('keyup', (ev) => {
-            ev.preventDefault;
-            if (ev.key === 'w') {
-                move.forward = false;
-            } else if (ev.key === 's') {
-                move.backward = false;
-            } else if (ev.key === 'd') {
-                move.right = false;
-            } else if (ev.key === 'a') {
-                move.left = false;
-            } else if (ev.key === 'z') {
-                move.down = false;
-            } else if (ev.key === 'x') {
-                move.up = false;
-            }
-        }, true);
-
-        const velocity = new Vector3(0.0, 0.0, 0.0);
-
-        let then = performance.now();
-        const loop = (now: number) => {
-
-            const delta = now - then;
-            then = now;
-
-            const moveSpeed = move.speed * delta;
-
-            velocity.set(0.0, 0.0, 0.0);
-
-            if (move.left) {
-                velocity.x -= moveSpeed;
-            }
-
-            if (move.right) {
-                velocity.x += moveSpeed;
-            }
-
-            if (move.forward) {
-                velocity.z -= moveSpeed;
-            }
-
-            if (move.backward) {
-                velocity.z += moveSpeed;
-            }
-
-            if (move.up) {
-                velocity.y += moveSpeed;
-            }
-
-            if (move.down) {
-                velocity.y -= moveSpeed;
-            }
-
-            // update controller rotation.
-            mouseLookController.update(pitch, yaw);
-            yaw = 0;
-            pitch = 0;
-
-            // apply rotation to velocity vector, and translate moveNode with it.
-            velocity.applyQuaternion(this.camera.quaternion);
-            this.camera.position.add(velocity);
-
-            // render scene:
-            this.renderer.render(this.scene, this.camera);
-
-            requestAnimationFrame(loop);
-
-        };
-
-        loop(performance.now());
-
     }
 
     async addTerrain() {
