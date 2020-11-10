@@ -8,6 +8,9 @@ import { Mesh, PCFSoftShadowMap, RepeatWrapping, TextureLoader, Vector3 } from '
 import MouseLookController from './controls/mouselookcontroller';
 import TextureSplattingMaterial from './terrain/SplattingMaterial';
 import { Controller } from './controls/controller';
+import { Trees } from './terrain/Trees';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { Grass } from './terrain/Grass';
 
 class Animation {
     private scene: THREE.Scene;
@@ -61,7 +64,7 @@ class Animation {
         grassTexture.wrapT = RepeatWrapping;
         grassTexture.repeat.set(5000 / width, 5000 / width);
 
-        const snowyRockTexture = new TextureLoader().load('resources/snowy_rock_01.png');
+        const snowyRockTexture = new TextureLoader().load('resources/rock_02.png');
         snowyRockTexture.wrapS = RepeatWrapping;
         snowyRockTexture.wrapT = RepeatWrapping;
         snowyRockTexture.repeat.set(1500 / width, 1500 / width);
@@ -73,16 +76,43 @@ class Animation {
         let terrainMesh = new Mesh(terrainGeometry, terrainMaterial);
         this.scene.add(terrainMesh);
         terrainMesh.translateY(-5);
+
+        const loader = new GLTFLoader();
+        let self = this;
+        loader.load( './resources/Flower.glb', function ( gltf ) {
+
+            const _stemMesh: any = gltf.scene.getObjectByName( 'Stem' );
+            const _blossomMesh: any = gltf.scene.getObjectByName( 'Blossom' );
+
+            let stemGeometry = new THREE.InstancedBufferGeometry();
+            let blossomGeometry: any = new THREE.InstancedBufferGeometry();
+
+            THREE.BufferGeometry.prototype.copy.call( stemGeometry, _stemMesh!.geometry );
+            THREE.BufferGeometry.prototype.copy.call( blossomGeometry, _blossomMesh!.geometry );
+
+            const defaultTransform = new THREE.Matrix4()
+                .makeRotationX( Math.PI )
+                .multiply( new THREE.Matrix4().makeScale( 7, 7, 7 ) );
+
+            stemGeometry.applyMatrix4( defaultTransform );
+            blossomGeometry.applyMatrix4( defaultTransform );
+
+            let trees = new Trees(terrainGeometry, 500, 5, blossomGeometry);
+            self.addEntity(trees);
+
+            let grass = new Grass(terrainGeometry, 2000, 0.1);
+            self.addEntity(grass);
+        } );
+        
     }
 
     addEntity(entity: Entity) {
-        this.scene.add(entity.mesh);
+        this.scene.add(entity.object);
         this.entities.push(entity);
     }
 
     draw(time: number) {
         this.renderer.render(this.scene, this.camera);
-
         this.entities.forEach((e) => {
             e.update(time)
         });
