@@ -1,10 +1,9 @@
 import * as THREE from 'three'
 import Skybox from './skybox'
 import Entity from './entity'
-import { forEachChild } from 'typescript';
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
-import { Mesh, PCFSoftShadowMap, RepeatWrapping, TextureLoader, Vector3 } from 'three';
+import { Group, Mesh, PCFSoftShadowMap, RepeatWrapping, TextureLoader, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
 import TextureSplattingMaterial from './terrain/SplattingMaterial';
 import { Controller } from './controls/controller';
@@ -79,30 +78,21 @@ class Animation {
 
         const loader = new GLTFLoader();
         let self = this;
-        loader.load( './resources/Flower.glb', function ( gltf ) {
-
-            const _stemMesh: any = gltf.scene.getObjectByName( 'Stem' );
-            const _blossomMesh: any = gltf.scene.getObjectByName( 'Blossom' );
-
-            let stemGeometry = new THREE.InstancedBufferGeometry();
-            let blossomGeometry: any = new THREE.InstancedBufferGeometry();
-
-            THREE.BufferGeometry.prototype.copy.call( stemGeometry, _stemMesh!.geometry );
-            THREE.BufferGeometry.prototype.copy.call( blossomGeometry, _blossomMesh!.geometry );
-
-            const defaultTransform = new THREE.Matrix4()
-                .makeRotationX( Math.PI )
-                .multiply( new THREE.Matrix4().makeScale( 7, 7, 7 ) );
-
-            stemGeometry.applyMatrix4( defaultTransform );
-            blossomGeometry.applyMatrix4( defaultTransform );
-
-            let trees = new Trees(terrainGeometry, 500, 5, blossomGeometry);
+        loader.load( './resources/Trees/scene.gltf', function (gltf) {
+            gltf.scene.scale.x = 0.03;
+            gltf.scene.scale.y = 0.03;
+            gltf.scene.scale.z = 0.03;
+            gltf.scene.translateY(-2);
+            
+            let group = new Group();
+            group.add(gltf.scene);
+            let trees = new Trees(terrainGeometry, 20, 1, group);
+            
             self.addEntity(trees);
-
-            let grass = new Grass(terrainGeometry, 2000, 0.1);
-            self.addEntity(grass);
         } );
+
+        let grass = new Grass(terrainGeometry, 10000, 1);
+        self.addEntity(grass);
         
     }
 

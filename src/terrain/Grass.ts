@@ -23,18 +23,19 @@ export class Grass implements Entity {
             while (y >= limit) {
                 x = -50 + Math.random()*100;
                 z = -50 + Math.random()*100;
-                y = terrainBufferGeometry.getHeightAt(x, z) -4;
+                y = terrainBufferGeometry.getHeightAt(x, z);
             }
             vertices.push( x, y, z );
         }
         const sprite = new THREE.TextureLoader().load( './resources/grasstust.png' );
-        const material = new THREE.PointsMaterial({size: 5, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: true});
+        const material = new THREE.PointsMaterial({size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: true});
         material.color.setRGB( 1.0, 1.0, 1.0 );
         const geometry = new THREE.BufferGeometry();
 
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
         this.object = new THREE.Points(geometry, material);
+        this.object.translateY(-4);
     }
 
     update() {        
