@@ -1,5 +1,5 @@
 interface Entity {
-    mesh:THREE.Mesh;
+    object:THREE.Object3D;
 
     update(time: number):void;
 
