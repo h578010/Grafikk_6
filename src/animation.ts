@@ -3,13 +3,19 @@ import Skybox from './skybox'
 import Entity from './entity'
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
-import { Group, Mesh, PCFSoftShadowMap, RepeatWrapping, TextureLoader, Vector3 } from 'three';
+import { Group, Mesh, MeshLambertMaterial, PCFSoftShadowMap, RepeatWrapping, TextureLoader, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
 import TextureSplattingMaterial from './terrain/SplattingMaterial';
 import { Controller } from './controls/controller';
 import { Trees } from './terrain/Trees';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Grass } from './terrain/Grass';
+import { LavaMaterial } from './materials/lava/LavaMaterial';
+
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
+import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 
 class Animation {
     private scene: THREE.Scene;
@@ -18,8 +24,10 @@ class Animation {
     private loop: (timestamp: number) => void;
     private entities: Entity[] = [];
     private controller: Controller;
+    //private composer: EffectComposer;
 
     constructor() {
+
         this.scene = new THREE.Scene();
         let width = window.innerWidth;
         let height = window.innerHeight;
@@ -40,6 +48,8 @@ class Animation {
 
         new Skybox(this.scene);
 
+        this.loadLava();
+
         let then = performance.now(); 
 
         let self = this;
@@ -52,6 +62,27 @@ class Animation {
         }.bind(this);
         window.requestAnimationFrame(this.loop);
         this.addTerrain();
+
+
+        
+    }
+
+    async loadLava() {
+        let sphere = new THREE.SphereBufferGeometry(20);
+        let lavamaterial = new LavaMaterial();
+        let sphereMaterial = await lavamaterial.getMaterial();
+        let sphereMesh = new Mesh(sphere, sphereMaterial);
+        //this.scene.add(sphereMesh);
+
+        const renderModel = new RenderPass( this.scene, this.camera );
+        const effectBloom = new BloomPass( 1.25 );
+        const effectFilm = new FilmPass( 0.35, 0.95, 2048, 0 );
+
+        //this.composer = new EffectComposer( this.renderer );
+
+        //this.composer.addPass( renderModel );
+        //this.composer.addPass( effectBloom );
+        //this.composer.addPass( effectFilm );
     }
 
     async addTerrain() {
@@ -93,7 +124,6 @@ class Animation {
 
         let grass = new Grass(terrainGeometry, 10000, 1);
         self.addEntity(grass);
-        
     }
 
     addEntity(entity: Entity) {
@@ -102,6 +132,8 @@ class Animation {
     }
 
     draw(time: number) {
+       // this.renderer.clear();
+       // this.composer.render( 0.01 );
         this.renderer.render(this.scene, this.camera);
         this.entities.forEach((e) => {
             e.update(time)
