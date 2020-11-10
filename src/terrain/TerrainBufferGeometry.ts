@@ -5,7 +5,6 @@
 import Utilities from '../lib/Utilities';
 import { PlaneBufferGeometry } from 'three';
 
-
 export default class TerrainBufferGeometry extends PlaneBufferGeometry {
     numberOfSubdivisions:number;
     width:number;
