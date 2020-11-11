@@ -29,6 +29,13 @@ class Animation {
     constructor() {
 
         this.scene = new THREE.Scene();
+        //Add fog to the scene
+        {
+            const color = 0xFFFFFF;
+            const near = 10;
+            const far = 100;
+            this.scene.fog = new THREE.Fog(color, near, far);
+          }
         let width = window.innerWidth;
         let height = window.innerHeight;
         this.camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
