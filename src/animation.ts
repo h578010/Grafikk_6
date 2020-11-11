@@ -3,7 +3,7 @@ import Skybox from './skybox'
 import Entity from './entity'
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
-import { Group, Mesh, MeshLambertMaterial, PCFSoftShadowMap, RepeatWrapping, TextureLoader, Vector3 } from 'three';
+import { Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PCFSoftShadowMap, RepeatWrapping, SphereGeometry, TextureLoader, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
 import TextureSplattingMaterial from './terrain/SplattingMaterial';
 import { Controller } from './controls/controller';
@@ -64,6 +64,8 @@ class Animation {
         window.requestAnimationFrame(this.loop);
         this.addTerrain();
 
+        this.addSun();
+
         const gui = new dat.GUI();
         let fogController = gui.add(params, 'enableFog').name('Enable fog');
         fogController.onChange((fog) => {
@@ -118,6 +120,17 @@ class Animation {
 
         let grass = new Grass(terrainGeometry, 10000, 1);
         self.addEntity(grass);
+    }
+
+    addSun() {
+        let sunGeometry = new SphereGeometry(5, 128, 128);
+        let sunTaxture = new TextureLoader().load('resources/texture_sun.jpg');
+        let sunMaterial = new MeshBasicMaterial({map: sunTaxture});
+        let sun = new Mesh(sunGeometry, sunMaterial);
+        sun.position.x = 100;
+        sun.position.y = 100;
+        sun.position.z = -10;
+        this.scene.add(sun);
     }
 
     addEntity(entity: Entity) {
