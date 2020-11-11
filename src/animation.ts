@@ -11,7 +11,7 @@ import { Trees } from './terrain/Trees';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Grass } from './terrain/Grass';
 import { Lava } from './terrain/Lava';
-
+import * as dat from 'dat.gui';
 
 class Animation {
     private scene: THREE.Scene;
@@ -23,7 +23,6 @@ class Animation {
     //private composer: EffectComposer;
 
     constructor() {
-
         this.scene = new THREE.Scene(); 
         
         let width = window.innerWidth;
@@ -45,11 +44,9 @@ class Animation {
 
         new Skybox(this.scene);
 
-        //Add fog to the scene
-        const color = 0xFFFFFF;
-        const near = 10;
-        const far = 100;
-        this.scene.fog = new THREE.Fog(color, near, far);
+        const params = {
+            enableFog: false
+        };     
 
         let lava = new Lava();
         this.addEntity(lava);
@@ -67,7 +64,18 @@ class Animation {
         window.requestAnimationFrame(this.loop);
         this.addTerrain();
 
-
+        const gui = new dat.GUI();
+        let fogController = gui.add(params, 'enableFog').name('Enable fog');
+        fogController.onChange((fog) => {
+            if (fog) {
+                const color = 0xFFFFFF;
+                const near = 10;
+                const far = 200;
+                this.scene.fog = new THREE.Fog(color, near, far);
+            } else {
+                this.scene.fog = null;
+            }
+        });
         
     }
 
