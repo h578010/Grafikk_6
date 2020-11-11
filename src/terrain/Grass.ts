@@ -35,7 +35,7 @@ export class Grass implements Entity {
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
         this.object = new THREE.Points(geometry, material);
-        this.object.translateY(-4);
+        this.object.translateY(-4.6);
     }
 
     update() {        

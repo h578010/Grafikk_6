@@ -10,12 +10,8 @@ import { Controller } from './controls/controller';
 import { Trees } from './terrain/Trees';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Grass } from './terrain/Grass';
-import { LavaMaterial } from './materials/lava/LavaMaterial';
+import { Lava } from './terrain/Lava';
 
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
-import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 
 class Animation {
     private scene: THREE.Scene;
@@ -28,14 +24,8 @@ class Animation {
 
     constructor() {
 
-        this.scene = new THREE.Scene();
-        //Add fog to the scene
-        {
-            const color = 0xFFFFFF;
-            const near = 10;
-            const far = 100;
-            this.scene.fog = new THREE.Fog(color, near, far);
-          }
+        this.scene = new THREE.Scene(); 
+        
         let width = window.innerWidth;
         let height = window.innerHeight;
         this.camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
@@ -55,7 +45,14 @@ class Animation {
 
         new Skybox(this.scene);
 
-        this.loadLava();
+        //Add fog to the scene
+        const color = 0xFFFFFF;
+        const near = 10;
+        const far = 100;
+        this.scene.fog = new THREE.Fog(color, near, far);
+
+        let lava = new Lava();
+        this.addEntity(lava);
 
         let then = performance.now(); 
 
@@ -74,23 +71,6 @@ class Animation {
         
     }
 
-    async loadLava() {
-        let sphere = new THREE.SphereBufferGeometry(20);
-        let lavamaterial = new LavaMaterial();
-        let sphereMaterial = await lavamaterial.getMaterial();
-        let sphereMesh = new Mesh(sphere, sphereMaterial);
-        //this.scene.add(sphereMesh);
-
-        const renderModel = new RenderPass( this.scene, this.camera );
-        const effectBloom = new BloomPass( 1.25 );
-        const effectFilm = new FilmPass( 0.35, 0.95, 2048, 0 );
-
-        //this.composer = new EffectComposer( this.renderer );
-
-        //this.composer.addPass( renderModel );
-        //this.composer.addPass( effectBloom );
-        //this.composer.addPass( effectFilm );
-    }
 
     async addTerrain() {
         const heightmapImage = await Utilities.loadImage('resources/volcano.png');
@@ -125,7 +105,6 @@ class Animation {
             let group = new Group();
             group.add(gltf.scene);
             let trees = new Trees(terrainGeometry, 20, 1, group);
-            
             self.addEntity(trees);
         } );
 
@@ -139,8 +118,6 @@ class Animation {
     }
 
     draw(time: number) {
-       // this.renderer.clear();
-       // this.composer.render( 0.01 );
         this.renderer.render(this.scene, this.camera);
         this.entities.forEach((e) => {
             e.update(time)

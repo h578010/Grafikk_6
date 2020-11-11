@@ -2,37 +2,21 @@ import THREE, { ShaderMaterial, TextureLoader, Vector2, Vector3, RepeatWrapping,
 import vertexshader from './VertexShader'
 import fragmentshader from './FragmentShader'
 
-export class LavaMaterial {
-   
+export default class LavaMaterial {
     private uniforms: any = null;
 
     constructor() {
         
-        
     }
 
-    async loadTexture(url: string): Promise <Texture> {
+    getMaterial() {
         const textureLoader = new TextureLoader();
-        return new Promise((accept, reject) => {
-            textureLoader.load(url, (texture) => {
-                if (texture) {
-                    accept(texture);
-                } 
-                reject();
-            });
-        });
-    }
-
-    async getMaterial() {
-        const cloudTexture = 
         
         this.uniforms = {
-            "fogDensity": { value: 0.45 },
-            "fogColor": { value: new Vector3( 0, 0, 0 ) },
             "time": { value: 1.0 },
             "uvScale": { value: new Vector2( 3.0, 1.0 ) },
-            "texture1": { value: await this.loadTexture('./resources/Lava/cloud.png') },
-            "texture2": { value: await this.loadTexture( './resources/Lava/lavatile.jpg') }
+            "texture1": { value: textureLoader.load('./resources/Lava/cloud.png') },
+            "texture2": { value: textureLoader.load( './resources/Lava/lavatile.jpg') }
         };
 
         this.uniforms[ "texture1" ].value.wrapS = this.uniforms[ "texture1" ].value.wrapT = RepeatWrapping;

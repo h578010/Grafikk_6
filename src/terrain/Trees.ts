@@ -37,7 +37,7 @@ export class Trees implements Entity {
             });
 
             treeClone.position.x = x;
-            treeClone.position.y = y;
+            treeClone.position.y = y-0.4;
             treeClone.position.z = z;
 
             treeClone.rotation.y = Math.random() * (2 * Math.PI);
