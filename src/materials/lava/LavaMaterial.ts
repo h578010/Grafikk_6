@@ -13,6 +13,8 @@ export default class LavaMaterial {
         const textureLoader = new TextureLoader();
         
         this.uniforms = {
+            "fogDensity": { value: 0.015 },
+			"fogColor": { value: new Vector3( 1, 1, 1 ) },
             "time": { value: 1.0 },
             "uvScale": { value: new Vector2( 3.0, 1.0 ) },
             "texture1": { value: textureLoader.load('./resources/Lava/cloud.png') },
