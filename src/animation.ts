@@ -12,6 +12,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Grass } from './terrain/Grass';
 import { Lava } from './terrain/Lava';
 import * as dat from 'dat.gui';
+import Sun from './sun';
 
 class Animation {
     private scene: THREE.Scene;
@@ -43,6 +44,7 @@ class Animation {
         //cathis.scene.add(light);
 
         new Skybox(this.scene);
+        new Sun(this.scene);
 
         const params = {
             enableFog: false
@@ -64,8 +66,6 @@ class Animation {
         window.requestAnimationFrame(this.loop);
         this.addTerrain();
 
-        this.addSun();
-
         const gui = new dat.GUI();
         let fogController = gui.add(params, 'enableFog').name('Enable fog');
         fogController.onChange((fog) => {
@@ -80,7 +80,6 @@ class Animation {
         });
         
     }
-
 
     async addTerrain() {
         const heightmapImage = await Utilities.loadImage('resources/volcano.png');
@@ -120,21 +119,6 @@ class Animation {
 
         let grass = new Grass(terrainGeometry, 10000, 1);
         self.addEntity(grass);
-    }
-
-    addSun() {
-        let sunGeometry = new SphereGeometry(5, 128, 128);
-        let sunTaxture = new TextureLoader().load('resources/texture_sun.jpg');
-        let sunMaterial = new MeshBasicMaterial({map: sunTaxture});
-        let sun = new Mesh(sunGeometry, sunMaterial);
-        sun.position.x = 100;
-        sun.position.y = 100;
-        sun.position.z = -10;
-        this.scene.add(sun);
-  
-        let sunlight = new PointLight(0xffffff, 2);
-        sun.add(sunlight);
-
     }
 
     addEntity(entity: Entity) {
