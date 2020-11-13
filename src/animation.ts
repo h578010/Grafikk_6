@@ -14,6 +14,7 @@ import { Lava } from './terrain/Lava';
 import * as dat from 'dat.gui';
 import Sun from './sun';
 import { Stones } from './terrain/Stones';
+import { ParticleEmitter } from './particleEmitter';
 
 class Animation {
     private scene: THREE.Scene;
@@ -57,8 +58,8 @@ class Animation {
 
         let self = this;
         this.loop = function (time: number) {
-            self.draw(time);
             let now = performance.now();
+            self.draw(now - then);
             self.controller.update(now - then);
             then = now;
             requestAnimationFrame(self.loop);
@@ -79,6 +80,11 @@ class Animation {
             }
         });
 
+        const emit = new ParticleEmitter('./resources/Particles/smoke3.png', new Vector3(0, 0, 45), 10000, Math.PI/2, 0.2);
+        emit.object.scale.x = 1;
+        emit.object.scale.y = 1;
+        emit.object.scale.z = 1;
+        this.addEntity(emit);
     }
 
     async addTerrain() {
@@ -95,10 +101,10 @@ class Animation {
         snowyRockTexture.wrapT = RepeatWrapping;
         snowyRockTexture.repeat.set(1500 / width, 1500 / width);
 
-        const stoneTexture = new TextureLoader().load('resources/stone.png');
-        stoneTexture.wrapS = RepeatWrapping;
-        stoneTexture.wrapT = RepeatWrapping;
-        stoneTexture.repeat.set(5000 / width, 5000 / width);
+        // const stoneTexture = new TextureLoader().load('resources/stone.png');
+        // stoneTexture.wrapS = RepeatWrapping;
+        // stoneTexture.wrapT = RepeatWrapping;
+        // stoneTexture.repeat.set(5000 / width, 5000 / width);
 
         const splatMap = new TextureLoader().load('resources/volcano.png');
 
