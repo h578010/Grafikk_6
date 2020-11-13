@@ -13,7 +13,7 @@ export class Grass implements Entity {
         this.terrain = terrainBufferGeometry;
         this.count = count;
         this.limit = limit;
-        const vertices = [];
+        const vertices: number[] = [];
 
         for (let i = 0; i < count; i++) {
             
@@ -25,7 +25,7 @@ export class Grass implements Entity {
                 z = -50 + Math.random()*100;
                 y = terrainBufferGeometry.getHeightAt(x, z);
             }
-            vertices.push( x, y, z );
+            vertices.push(x, y, z);
         }
         const sprite = new THREE.TextureLoader().load( './resources/grasstust.png' );
         const material = new THREE.PointsMaterial({size: 2, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: true});
