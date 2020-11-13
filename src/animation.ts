@@ -80,7 +80,7 @@ class Animation {
             }
         });
 
-        const emit = new ParticleEmitter('./resources/Particles/smoke3.png', new Vector3(0, 0, 45), 10000, Math.PI/2, 0.2);
+        const emit = new ParticleEmitter('./resources/Particles/smoke3.png', new Vector3(-4, 10, 0), 80000, Math.PI/2, 0.2);
         emit.object.scale.x = 1;
         emit.object.scale.y = 1;
         emit.object.scale.z = 1;

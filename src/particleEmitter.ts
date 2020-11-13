@@ -7,12 +7,20 @@ class Particle {
     public age = 0;
     private rotation: number;
     private growth: number;
+    private maxAge: number;
 
-    constructor(velocity: Vector3, material: SpriteMaterial, rotation: number, growth:number) {
+    constructor(velocity: Vector3, texture: Texture, rotation: number, growth:number, maxAge: number) {
         this.velocity = velocity;
-        this.sprite = new Sprite(material);
+        let spriteMaterial = new SpriteMaterial(
+            {
+                map: texture, 
+                blending: NormalBlending, 
+                transparent: true
+            });
+        this.sprite = new Sprite(spriteMaterial);
         this.rotation = rotation;
         this.growth = growth;
+        this.maxAge = maxAge;
     }
 
     update(delta: number) {
@@ -20,15 +28,16 @@ class Particle {
         move.multiplyScalar(delta/1000);
         this.sprite.position.add(move);
         this.age += delta;
-        this.sprite.material.rotation += this.rotation*delta/100000;
+        this.sprite.material.rotation += this.rotation*delta/1000;
         this.sprite.scale.x = 1 + this.age/1000 * this.growth;
         this.sprite.scale.y = 1 + this.age/1000 * this.growth;
         this.sprite.scale.z = 1 + this.age/1000 * this.growth;
+        this.sprite.material.opacity = (1 - this.age/this.maxAge);
     }
 }
 
 export class ParticleEmitter implements Entity{
-    private spriteMaterial: SpriteMaterial;
+    private texture: Texture;
     public object: Object3D;
     private particles: Particle[] = [];
     private i = 0;
@@ -37,12 +46,8 @@ export class ParticleEmitter implements Entity{
     private growth: number;
 
     constructor(textureURL: string, pos: Vector3, maxAge: number, angle: number, growth: number) {
-        const texture = new TextureLoader().load(textureURL);
-        this.spriteMaterial = new SpriteMaterial(
-            {
-                map: texture, 
-                blending: NormalBlending
-            });
+        this.texture = new TextureLoader().load(textureURL);
+       
         this.maxAge = maxAge;
         this.angle = angle;
         this.growth = growth;
@@ -68,7 +73,7 @@ export class ParticleEmitter implements Entity{
             let velocity = new Vector3(0, 1, 0);
             velocity.applyAxisAngle(new Vector3(0, 0, 1), this.angle * (Math.random()-0.5));
             velocity.applyAxisAngle(new Vector3(1, 0, 0), this.angle * (Math.random()-0.5));
-            let p = new Particle(velocity, this.spriteMaterial, Math.random(), this.growth);
+            let p = new Particle(velocity, this.texture, (Math.random()-0.5)*0.5, this.growth, this.maxAge);
             this.particles.push(p);
             this.object.add(p.sprite);
         }
