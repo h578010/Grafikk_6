@@ -20,6 +20,6 @@ export class Lava implements Entity{
     }
 
     update(time: number) {
-        this.lavaMaker.updateTime(time/500000);
+        this.lavaMaker.updateTime(time/100);
     }
 }
