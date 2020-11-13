@@ -13,6 +13,7 @@ import { Grass } from './terrain/Grass';
 import { Lava } from './terrain/Lava';
 import * as dat from 'dat.gui';
 import Sun from './sun';
+import { Stones } from './terrain/Stones';
 
 class Animation {
     private scene: THREE.Scene;
@@ -24,8 +25,7 @@ class Animation {
     //private composer: EffectComposer;
 
     constructor() {
-        this.scene = new THREE.Scene(); 
-        
+        this.scene = new THREE.Scene();
         let width = window.innerWidth;
         let height = window.innerHeight;
         this.camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
@@ -48,18 +48,18 @@ class Animation {
 
         const params = {
             enableFog: false
-        };     
+        };
 
         let lava = new Lava();
         this.addEntity(lava);
 
-        let then = performance.now(); 
+        let then = performance.now();
 
         let self = this;
         this.loop = function (time: number) {
             self.draw(time);
             let now = performance.now();
-            self.controller.update(now-then);
+            self.controller.update(now - then);
             then = now;
             requestAnimationFrame(self.loop);
         }.bind(this);
@@ -78,7 +78,7 @@ class Animation {
                 this.scene.fog = null;
             }
         });
-        
+
     }
 
     async addTerrain() {
@@ -95,30 +95,38 @@ class Animation {
         snowyRockTexture.wrapT = RepeatWrapping;
         snowyRockTexture.repeat.set(1500 / width, 1500 / width);
 
+        const stoneTexture = new TextureLoader().load('resources/stone.png');
+        stoneTexture.wrapS = RepeatWrapping;
+        stoneTexture.wrapT = RepeatWrapping;
+        stoneTexture.repeat.set(5000 / width, 5000 / width);
+
         const splatMap = new TextureLoader().load('resources/volcano.png');
 
         const terrainMaterial = new TextureSplattingMaterial(0xffffff, 0, [grassTexture, snowyRockTexture], [splatMap]);
-    
+
         let terrainMesh = new Mesh(terrainGeometry, terrainMaterial);
         this.scene.add(terrainMesh);
         terrainMesh.translateY(-5);
 
         const loader = new GLTFLoader();
         let self = this;
-        loader.load( './resources/Trees/scene.gltf', function (gltf) {
+        loader.load('./resources/Trees/scene.gltf', function (gltf) {
             gltf.scene.scale.x = 0.03;
             gltf.scene.scale.y = 0.03;
             gltf.scene.scale.z = 0.03;
             gltf.scene.translateY(-2);
-            
+
             let group = new Group();
             group.add(gltf.scene);
             let trees = new Trees(terrainGeometry, 20, 1, group);
             self.addEntity(trees);
-        } );
+        });
 
         let grass = new Grass(terrainGeometry, 10000, 1);
         self.addEntity(grass);
+
+        let stones = new Stones(terrainGeometry, 100, 1);
+        self.addEntity(stones);
     }
 
     addEntity(entity: Entity) {
