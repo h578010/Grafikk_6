@@ -1,23 +1,24 @@
 import { Mesh, MeshBasicMaterial, Object3D, PointLight, SphereGeometry, TextureLoader } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import Entity from './entity';
 
-class Unicorn { 
+class Unicorn implements Entity{ 
+    public object: Object3D
 
-constructor(scene: THREE.Scene) {
+constructor() {
 
-    let orbitNode = new Object3D();
-    orbitNode.position.x = 20;
-    orbitNode.position.y = 0;
-    orbitNode.position.z = -20;
-
-    scene.add(orbitNode);
+    this.object = new Object3D();
 
     let loader = new GLTFLoader();
-    loader.load('resources/unicorn.glb', (object) => {
-        const unicorn = object.scene.children[0];
-        orbitNode.add(unicorn);
+    loader.load('resources/unicorn.glb', (gltf) => {
+        this.object.add(gltf.scene);
+        this.object.position.x = 20;
+        this.object.position.y = 0;
+        this.object.position.z = -20;
     });
 
+    }
+    update() {
     }
 }
 
