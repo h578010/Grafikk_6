@@ -51,7 +51,8 @@ class Animation {
         let bat = new Bat()
         this.addEntity(bat);
 
-        new Unicorn(this.scene);
+        let unicorn = new Unicorn();
+        this.addEntity(unicorn);
 
         // Button for fog:
         const params = {
