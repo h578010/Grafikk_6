@@ -25,7 +25,6 @@ class Animation {
     private loop: (timestamp: number) => void;
     private entities: Entity[] = [];
     private controller: Controller;
-    //private composer: EffectComposer;
 
     constructor() {
         this.scene = new THREE.Scene();
