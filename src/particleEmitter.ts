@@ -8,8 +8,9 @@ class Particle {
     private rotation: number;
     private growth: number;
     private maxAge: number;
+    private gravity: number;
 
-    constructor(velocity: Vector3, texture: Texture, rotation: number, growth:number, maxAge: number) {
+    constructor(velocity: Vector3, texture: Texture, rotation: number, growth:number, maxAge: number, gravity: number) {
         this.velocity = velocity;
         let spriteMaterial = new SpriteMaterial(
             {
@@ -21,6 +22,7 @@ class Particle {
         this.rotation = rotation;
         this.growth = growth;
         this.maxAge = maxAge;
+        this.gravity = gravity;
     }
 
     update(delta: number) {
@@ -33,6 +35,7 @@ class Particle {
         this.sprite.scale.y = 1 + this.age/1000 * this.growth;
         this.sprite.scale.z = 1 + this.age/1000 * this.growth;
         this.sprite.material.opacity = (1 - this.age/this.maxAge);
+        this.velocity.add(new Vector3(0, this.gravity*delta/1000, 0));
     }
 }
 
@@ -44,13 +47,16 @@ export class ParticleEmitter implements Entity{
     private maxAge: number;
     private angle: number;
     private growth: number;
+    private gravity: number;
+    private velocity: Vector3;
 
-    constructor(textureURL: string, pos: Vector3, maxAge: number, angle: number, growth: number) {
+    constructor(velocity: Vector3, textureURL: string, pos: Vector3, maxAge: number, angle: number, growth: number, gravity = 0) {
+        this.velocity = velocity;
         this.texture = new TextureLoader().load(textureURL);
-       
         this.maxAge = maxAge;
         this.angle = angle;
         this.growth = growth;
+        this.gravity = gravity;
         this.object = new Group();
         this.object.position.x = pos.x;
         this.object.position.y = pos.y;
@@ -70,10 +76,10 @@ export class ParticleEmitter implements Entity{
         });
 
         if (this.i++ % 2 == 0) {
-            let velocity = new Vector3(0, 1, 0);
+            let velocity = this.velocity.clone();
             velocity.applyAxisAngle(new Vector3(0, 0, 1), this.angle * (Math.random()-0.5));
             velocity.applyAxisAngle(new Vector3(1, 0, 0), this.angle * (Math.random()-0.5));
-            let p = new Particle(velocity, this.texture, (Math.random()-0.5)*0.5, this.growth, this.maxAge);
+            let p = new Particle(velocity, this.texture, (Math.random()-0.5)*0.5, this.growth, this.maxAge, this.gravity);
             this.particles.push(p);
             this.object.add(p.sprite);
         }
