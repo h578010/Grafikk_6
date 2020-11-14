@@ -45,10 +45,6 @@ class Animation {
         let sun = new Sun();
         this.addEntity(sun);
 
-        const params = {
-            enableFog: false
-        };
-
         let lava = new Lava();
         this.addEntity(lava);
 
@@ -57,19 +53,10 @@ class Animation {
 
         new Unicorn(this.scene);
 
-        let then = performance.now();
-
-        let self = this;
-        this.loop = function (time: number) {
-            let now = performance.now();
-            self.draw(now - then);
-            self.controller.update(now - then);
-            then = now;
-            requestAnimationFrame(self.loop);
-        }.bind(this);
-        window.requestAnimationFrame(this.loop);
-        this.addTerrain();
-
+        // Button for fog:
+        const params = {
+            enableFog: false
+        };
         const gui = new dat.GUI();
         let fogController = gui.add(params, 'enableFog').name('Enable fog');
         fogController.onChange((fog) => {
@@ -83,13 +70,46 @@ class Animation {
             }
         });
 
-        const emit = new ParticleEmitter(new Vector3(0, 1, 0),'./resources/Particles/smoke3.png', new Vector3(-4, 10, 0), 80000, Math.PI/2, 0.2);
-        emit.object.scale.x = 1;
-        emit.object.scale.y = 1;
-        emit.object.scale.z = 1;
-        this.addEntity(emit);
-        const emit2 = new ParticleEmitter(new Vector3(0, 3, 0), './resources/Particles/spark.png', new Vector3(0, 0, 30), 10000, Math.PI/2, 0.2, -1);
-        this.addEntity(emit2);
+        // Add smoke from the vulcano:
+        const smoke = new ParticleEmitter({
+            velocity: new Vector3(0, 1, 0),
+            textureURL: './resources/Particles/smoke3.png', 
+            pos: new Vector3(-4, 15, 0), 
+            maxAge: 50000, 
+            angle: Math.PI/2, 
+            growth: 0.2, 
+            gravity: 0, 
+            width: 8});
+        this.addEntity(smoke);
+
+        // Add sparks from the lava:
+        const sparks = new ParticleEmitter({
+            velocity: new Vector3(0, 10, 0),
+            textureURL: './resources/Particles/spark.png', 
+            pos: new Vector3(-4, 8, 0), 
+            maxAge: 10000, 
+            angle: Math.PI/2, 
+            growth: 0.2, 
+            gravity: -5, 
+            width: 20});
+        sparks.object.scale.x = 0.05;
+        sparks.object.scale.y = 0.05;
+        sparks.object.scale.z = 0.05;
+        this.addEntity(sparks);
+
+        this.addTerrain();
+
+        // Loop:
+        let then = performance.now();
+        let self = this;
+        this.loop = function (time: number) {
+            let now = performance.now();
+            self.draw(now - then);
+            self.controller.update(now - then);
+            then = now;
+            requestAnimationFrame(self.loop);
+        }.bind(this);
+        window.requestAnimationFrame(this.loop);
     }
 
     async addTerrain() {
@@ -105,11 +125,6 @@ class Animation {
         snowyRockTexture.wrapS = RepeatWrapping;
         snowyRockTexture.wrapT = RepeatWrapping;
         snowyRockTexture.repeat.set(1500 / width, 1500 / width);
-
-        // const stoneTexture = new TextureLoader().load('resources/stone.png');
-        // stoneTexture.wrapS = RepeatWrapping;
-        // stoneTexture.wrapT = RepeatWrapping;
-        // stoneTexture.repeat.set(5000 / width, 5000 / width);
 
         const splatMap = new TextureLoader().load('resources/volcano.png');
 
