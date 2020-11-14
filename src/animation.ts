@@ -74,12 +74,16 @@ class Animation {
         const smoke = new ParticleEmitter({
             velocity: new Vector3(0, 1, 0),
             textureURL: './resources/Particles/smoke3.png', 
-            pos: new Vector3(-4, 15, 0), 
+            pos: new Vector3(-4, 10, 0), 
             maxAge: 50000, 
             angle: Math.PI/2, 
-            growth: 0.2, 
+            growth: 0.4, 
             gravity: 0, 
-            width: 8});
+            width: 6,
+            startOpacity: 0.6,
+            endOpacity: 0,
+            fadeInTime: 1000
+        });
         this.addEntity(smoke);
 
         // Add sparks from the lava:
