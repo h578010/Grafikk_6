@@ -47,7 +47,7 @@ class Animation {
         let sun = new Sun();
         this.addEntity(sun);
 
-        let light = new AmbientLight('0xffffff', 0);
+        let light = new AmbientLight('0xffffff', 0.6);
         this.scene.add(light);
 
         let lava = new Lava();
