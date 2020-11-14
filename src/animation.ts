@@ -95,12 +95,29 @@ class Animation {
             angle: Math.PI/2, 
             growth: 0.2, 
             gravity: -5, 
-            width: 20});
+            width: 20
+        });
         sparks.object.scale.x = 0.05;
         sparks.object.scale.y = 0.05;
         sparks.object.scale.z = 0.05;
         this.addEntity(sparks);
 
+        // Add ash rain:
+        const ash = new ParticleEmitter({
+            velocity: new Vector3(0, 0, 0),
+            textureURL: './resources/Particles/ash2.png', 
+            pos: new Vector3(-4, 40, 0),
+            maxAge: 10000,
+            growth: 0,
+            gravity: -1,
+            width: 200
+        });
+        ash.object.scale.x = 2;
+        ash.object.scale.y = 2;
+        ash.object.scale.z = 2;
+        this.addEntity(ash);
+
+        // Add terrain:
         this.addTerrain();
 
         // Loop:
