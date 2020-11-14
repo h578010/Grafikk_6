@@ -23,7 +23,6 @@ class Animation {
     private loop: (timestamp: number) => void;
     private entities: Entity[] = [];
     private controller: Controller;
-    //private composer: EffectComposer;
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -39,10 +38,6 @@ class Animation {
         this.controller = new Controller(this.camera, this.renderer.domElement);
 
         document.body.appendChild(this.renderer.domElement);
-
-        //let light = new THREE.PointLight(0xffffff, 10, 100);
-        //light.position.set(50, 50, 50);
-        //cathis.scene.add(light);
 
         new Skybox(this.scene);
         new Sun(this.scene);
