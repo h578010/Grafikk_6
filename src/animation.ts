@@ -36,6 +36,8 @@ class Animation {
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize(width, height);
         this.renderer.setClearColor(0x202050, 1);
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
 
         this.controller = new Controller(this.camera, this.renderer.domElement);
 
@@ -45,7 +47,7 @@ class Animation {
         let sun = new Sun();
         this.addEntity(sun);
 
-        let light = new AmbientLight('0xffffff', 1);
+        let light = new AmbientLight('0xffffff', 0);
         this.scene.add(light);
 
         let lava = new Lava();
@@ -156,6 +158,7 @@ class Animation {
         const terrainMaterial = new TextureSplattingMaterial(0xffffff, 0, [grassTexture, snowyRockTexture], [splatMap]);
 
         let terrainMesh = new Mesh(terrainGeometry, terrainMaterial);
+        terrainMesh.receiveShadow = true;
         this.scene.add(terrainMesh);
         terrainMesh.translateY(-5);
 
