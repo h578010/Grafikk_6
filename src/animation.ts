@@ -3,7 +3,7 @@ import Skybox from './skybox'
 import Entity from './entity'
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
-import { ByteType, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PCFSoftShadowMap, PointLight, RepeatWrapping, SphereGeometry, TextureLoader, Vector3 } from 'three';
+import { AmbientLight, ByteType, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PCFSoftShadowMap, PointLight, RepeatWrapping, SphereGeometry, TextureLoader, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
 import TextureSplattingMaterial from './terrain/SplattingMaterial';
 import { Controller } from './controls/controller';
@@ -44,6 +44,9 @@ class Animation {
         new Skybox(this.scene);
         let sun = new Sun();
         this.addEntity(sun);
+
+        let light = new AmbientLight('0xffffff', 1);
+        this.scene.add(light);
 
         let lava = new Lava();
         this.addEntity(lava);

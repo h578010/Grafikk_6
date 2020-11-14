@@ -16,7 +16,7 @@ constructor() {
     this.object.position.y = 80;
     this.object.position.z = -10;
 
-    let sunlight = new PointLight(0xffffff, 2);
+    let sunlight = new PointLight(0xffffff, 0.2);
     this.object.add(sunlight);
 
     }
