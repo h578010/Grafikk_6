@@ -69,7 +69,7 @@ class Animation {
             if (fog) {
                 const color = 0xFFFFFF;
                 const near = 10;
-                const far = 200;
+                const far = 100;
                 this.scene.fog = new THREE.Fog(color, near, far);
             } else {
                 this.scene.fog = null;
