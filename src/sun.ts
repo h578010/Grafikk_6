@@ -1,23 +1,26 @@
 
-import { Mesh, MeshBasicMaterial, PointLight, SphereGeometry, TextureLoader } from 'three';
+import { Mesh, MeshBasicMaterial, Object3D, PointLight, SphereGeometry, TextureLoader } from 'three';
+import Entity from './entity';
 
-class Sun extends SphereGeometry { 
+class Sun implements Entity { 
+    public object: Object3D;
 
-constructor(scene: THREE.Scene) {
-    super();
+constructor() {
+
+    this.object = new Object3D();
     let sunGeometry = new SphereGeometry(5, 128, 128);
     let sunTaxture = new TextureLoader().load('resources/texture_sun.jpg');
     let sunMaterial = new MeshBasicMaterial({map: sunTaxture});
-    let sun = new Mesh(sunGeometry, sunMaterial);
-    sun.position.x = 100;
-    sun.position.y = 100;
-    sun.position.z = -10;
-    scene.add(sun);
+    this.object = new Mesh(sunGeometry, sunMaterial);
+    this.object.position.x = 80;
+    this.object.position.y = 80;
+    this.object.position.z = -10;
 
     let sunlight = new PointLight(0xffffff, 2);
-    sun.add(sunlight);
+    this.object.add(sunlight);
 
     }
+    update() {}
 }
 
 export default Sun;

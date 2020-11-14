@@ -42,12 +42,9 @@ class Animation {
 
         document.body.appendChild(this.renderer.domElement);
 
-        //let light = new THREE.PointLight(0xffffff, 10, 100);
-        //light.position.set(50, 50, 50);
-        //cathis.scene.add(light);
-
         new Skybox(this.scene);
-        new Sun(this.scene);
+        let sun = new Sun();
+        this.addEntity(sun);
 
         const params = {
             enableFog: false
