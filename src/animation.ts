@@ -3,7 +3,7 @@ import Skybox from './skybox'
 import Entity from './entity'
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
-import { AmbientLight, ByteType, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, PCFSoftShadowMap, PointLight, RepeatWrapping, SphereGeometry, TextureLoader, Vector3 } from 'three';
+import { AmbientLight, ByteType, Group, Material, Mesh, MeshBasicMaterial, MeshLambertMaterial, PCFSoftShadowMap, PlaneBufferGeometry, PointLight, RepeatWrapping, SphereGeometry, TextureLoader, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
 import TextureSplattingMaterial from './terrain/SplattingMaterial';
 import { Controller } from './controls/controller';
@@ -99,7 +99,7 @@ class Animation {
 
         // Add sparks from the lava:
         const sparks = new ParticleEmitter({
-            amount: 10,
+            amount: 100,
             velocity: new Vector3(0, 50, 0),
             textureURL: './resources/Particles/spark.png', 
             pos: new Vector3(-2, 6, 0), 
@@ -151,6 +151,8 @@ class Animation {
         const heightmapImage = await Utilities.loadImage('resources/volcano.png');
         const width = 100;
         const terrainGeometry = new TerrainBufferGeometry(heightmapImage, width, 128, 20);
+        const bacgroundGeometry = new PlaneBufferGeometry(500, 500);
+
         const grassTexture = new TextureLoader().load('resources/grass_02.png');
         grassTexture.wrapS = RepeatWrapping;
         grassTexture.wrapT = RepeatWrapping;
@@ -163,12 +165,24 @@ class Animation {
 
         const splatMap = new TextureLoader().load('resources/volcano.png');
 
-        const terrainMaterial = new TextureSplattingMaterial(0xffffff, 0, [grassTexture, snowyRockTexture], [splatMap]);
+        const backgroundTexture = new TextureLoader().load('resources/grass_02.png');
+        backgroundTexture.wrapS = RepeatWrapping;
+        backgroundTexture.wrapT = RepeatWrapping;
+        backgroundTexture.repeat.set(25000 / width, 25000 / width);
 
-        let terrainMesh = new Mesh(terrainGeometry, terrainMaterial);
+        const terrainMaterial = new TextureSplattingMaterial(0x999999, 0, [grassTexture, snowyRockTexture], [splatMap]);
+        const grassMaterial = new MeshBasicMaterial({map: backgroundTexture});
+
+        const terrainMesh = new Mesh(terrainGeometry, terrainMaterial);
+        const backgroundMesh = new Mesh(bacgroundGeometry, grassMaterial);
         terrainMesh.receiveShadow = true;
+        backgroundMesh.receiveShadow = true;
+
         this.scene.add(terrainMesh);
         terrainMesh.translateY(-5);
+        this.scene.add(backgroundMesh);
+        backgroundMesh.rotateX(-Math.PI/2);
+        backgroundMesh.translateZ(-4.8);
 
         const loader = new GLTFLoader();
         let self = this;
@@ -180,7 +194,7 @@ class Animation {
 
             let group = new Group();
             group.add(gltf.scene);
-            let trees = new Trees(terrainGeometry, 20, 1, group);
+            let trees = new Trees(terrainGeometry, 40, 1, group);
             self.addEntity(trees);
         });
 

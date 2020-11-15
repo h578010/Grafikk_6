@@ -15,14 +15,22 @@ export class Grass implements Entity {
         this.limit = limit;
         const vertices: number[] = [];
 
+        const gaussianRand = function() {
+            let rand = 0;
+            for (let i = 0; i < 6; i += 1) {
+              rand += Math.random();
+            }
+            return rand/6;
+        }
+
         for (let i = 0; i < count; i++) {
             
             let y = limit;
             let x = 0;
             let z = 0;
             while (y >= limit) {
-                x = -50 + Math.random()*100;
-                z = -50 + Math.random()*100;
+                x = -100 + gaussianRand()*200;
+                z = -100 + gaussianRand()*200;
                 y = terrainBufferGeometry.getHeightAt(x, z);
             }
             vertices.push(x, y, z);
