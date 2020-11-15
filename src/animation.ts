@@ -17,6 +17,7 @@ import { Stones } from './terrain/Stones';
 import { ParticleEmitter } from './particleEmitter';
 import Bat from './bat';
 import Unicorn from './unicorn';
+import Rock from './terrain/Rock';
 
 class Animation {
     private scene: THREE.Scene;
@@ -58,6 +59,9 @@ class Animation {
 
         let unicorn = new Unicorn();
         this.addEntity(unicorn);
+
+        let rock = new Rock();
+        this.addEntity(rock);
 
         // Button for fog:
         const params = {
