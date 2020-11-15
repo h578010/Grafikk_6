@@ -26,6 +26,8 @@ class Animation {
     private loop: (timestamp: number) => void;
     private entities: Entity[] = [];
     private controller: Controller;
+    private unicorn: Unicorn;
+    private uniEnabled = false;
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -38,11 +40,28 @@ class Animation {
         this.renderer.setSize(width, height);
         this.renderer.setClearColor(0x202050, 1);
         this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
         this.controller = new Controller(this.camera, this.renderer.domElement);
 
         document.body.appendChild(this.renderer.domElement);
+
+        let self = this;
+
+        const raycaster = new THREE.Raycaster();
+        const onclick = function (event: any) {
+            if (self.uniEnabled) {
+                let x = (event.clientX / window.innerWidth) * 2 - 1;
+                let y = - (event.clientY / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(new THREE.Vector2(x, y), self.camera);
+                const intersects = raycaster.intersectObjects(self.scene.children);
+                if (intersects.length > 0) {
+                    let point = intersects[0].point;
+                    self.moveUnicorn(point);
+                }
+            }
+        }
+        window.addEventListener('click', onclick, false);
 
         new Skybox(this.scene);
         let sun = new Sun();
@@ -57,15 +76,16 @@ class Animation {
         let bat = new Bat()
         this.addEntity(bat);
 
-        let unicorn = new Unicorn();
-        this.addEntity(unicorn);
-
         let rock = new Rock();
         this.addEntity(rock);
 
-        // Button for fog:
+        this.unicorn = new Unicorn();
+        this.addEntity(this.unicorn);
+
+        // Button for fog and raycaster:
         const params = {
-            enableFog: false
+            enableFog: false,   
+            enableUni: false
         };
         const gui = new dat.GUI();
         let fogController = gui.add(params, 'enableFog').name('Enable fog');
@@ -79,17 +99,21 @@ class Animation {
                 this.scene.fog = null;
             }
         });
+        let uniController = gui.add(params, 'enableUni').name('Enable raycaster');
+        uniController.onChange((uni) => {
+            this.uniEnabled = uni;
+        });
 
         // Add smoke from the vulcano:
         const smoke = new ParticleEmitter({
             amount: 10,
             velocity: new Vector3(0, 1, 0),
-            textureURL: './resources/Particles/smoke3.png', 
-            pos: new Vector3(-4, 10, 0), 
-            maxAge: 50000, 
-            angle: Math.PI/2, 
-            growth: 0.4, 
-            gravity: 0, 
+            textureURL: './resources/Particles/smoke3.png',
+            pos: new Vector3(-4, 10, 0),
+            maxAge: 50000,
+            angle: Math.PI / 2,
+            growth: 0.4,
+            gravity: 0,
             width: 6,
             startOpacity: 0.6,
             endOpacity: 0,
@@ -101,12 +125,12 @@ class Animation {
         const sparks = new ParticleEmitter({
             amount: 100,
             velocity: new Vector3(0, 50, 0),
-            textureURL: './resources/Particles/spark.png', 
-            pos: new Vector3(-2, 6, 0), 
-            maxAge: 10000, 
-            angle: Math.PI/4, 
-            growth: 0, 
-            gravity: -25, 
+            textureURL: './resources/Particles/spark.png',
+            pos: new Vector3(-2, 6, 0),
+            maxAge: 10000,
+            angle: Math.PI / 4,
+            growth: 0,
+            gravity: -25,
             width: 10
         });
         sparks.object.scale.x = 0.4;
@@ -118,11 +142,11 @@ class Animation {
         const ash = new ParticleEmitter({
             amount: 1,
             velocity: new Vector3(0, 2, 0),
-            textureURL: './resources/Particles/ash4.png', 
-            pos: new Vector3(-4, 6, 0), 
+            textureURL: './resources/Particles/ash4.png',
+            pos: new Vector3(-4, 6, 0),
             maxAge: 120000,
             growth: 0,
-            angle: Math.PI/2, 
+            angle: Math.PI / 2,
             gravity: -0.03,
             width: 20
         });
@@ -136,7 +160,6 @@ class Animation {
 
         // Loop:
         let then = performance.now();
-        let self = this;
         this.loop = function (time: number) {
             let now = performance.now();
             self.draw(now - then);
@@ -145,6 +168,12 @@ class Animation {
             requestAnimationFrame(self.loop);
         }.bind(this);
         window.requestAnimationFrame(this.loop);
+    }
+
+    moveUnicorn(point: Vector3) {
+        this.unicorn.object.position.x = point.x;
+        this.unicorn.object.position.y = point.y;
+        this.unicorn.object.position.z = point.z;
     }
 
     async addTerrain() {
@@ -171,7 +200,7 @@ class Animation {
         backgroundTexture.repeat.set(25000 / width, 25000 / width);
 
         const terrainMaterial = new TextureSplattingMaterial(0x999999, 0, [grassTexture, snowyRockTexture], [splatMap]);
-        const grassMaterial = new MeshBasicMaterial({map: backgroundTexture});
+        const grassMaterial = new MeshBasicMaterial({ map: backgroundTexture });
 
         const terrainMesh = new Mesh(terrainGeometry, terrainMaterial);
         const backgroundMesh = new Mesh(bacgroundGeometry, grassMaterial);
@@ -181,7 +210,7 @@ class Animation {
         this.scene.add(terrainMesh);
         terrainMesh.translateY(-5);
         this.scene.add(backgroundMesh);
-        backgroundMesh.rotateX(-Math.PI/2);
+        backgroundMesh.rotateX(-Math.PI / 2);
         backgroundMesh.translateZ(-4.8);
 
         const loader = new GLTFLoader();
