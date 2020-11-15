@@ -82,6 +82,7 @@ class Animation {
 
         // Add smoke from the vulcano:
         const smoke = new ParticleEmitter({
+            amount: 10,
             velocity: new Vector3(0, 1, 0),
             textureURL: './resources/Particles/smoke3.png', 
             pos: new Vector3(-4, 10, 0), 
@@ -98,33 +99,36 @@ class Animation {
 
         // Add sparks from the lava:
         const sparks = new ParticleEmitter({
-            velocity: new Vector3(0, 10, 0),
+            amount: 10,
+            velocity: new Vector3(0, 50, 0),
             textureURL: './resources/Particles/spark.png', 
-            pos: new Vector3(-4, 8, 0), 
+            pos: new Vector3(-2, 6, 0), 
             maxAge: 10000, 
-            angle: Math.PI/2, 
-            growth: 0.2, 
-            gravity: -5, 
-            width: 20
+            angle: Math.PI/4, 
+            growth: 0, 
+            gravity: -25, 
+            width: 10
         });
-        sparks.object.scale.x = 0.05;
-        sparks.object.scale.y = 0.05;
-        sparks.object.scale.z = 0.05;
+        sparks.object.scale.x = 0.4;
+        sparks.object.scale.y = 0.4;
+        sparks.object.scale.z = 0.4;
         this.addEntity(sparks);
 
         // Add ash rain:
         const ash = new ParticleEmitter({
-            velocity: new Vector3(0, 0, 0),
-            textureURL: './resources/Particles/ash2.png', 
-            pos: new Vector3(-4, 40, 0),
-            maxAge: 10000,
+            amount: 1,
+            velocity: new Vector3(0, 2, 0),
+            textureURL: './resources/Particles/ash4.png', 
+            pos: new Vector3(-4, 6, 0), 
+            maxAge: 120000,
             growth: 0,
-            gravity: -1,
-            width: 200
+            angle: Math.PI/2, 
+            gravity: -0.03,
+            width: 20
         });
-        ash.object.scale.x = 2;
-        ash.object.scale.y = 2;
-        ash.object.scale.z = 2;
+        ash.object.scale.x = 0.2;
+        ash.object.scale.y = 0.2;
+        ash.object.scale.z = 0.2;
         this.addEntity(ash);
 
         // Add terrain:

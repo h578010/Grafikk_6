@@ -64,7 +64,8 @@ interface EmitterParams {
     width?: number,
     startOpacity?: number,
     endOpacity?: number,
-    fadeInTime?: number
+    fadeInTime?: number,
+    amount: number
 }
 
 export class ParticleEmitter implements Entity{
@@ -81,8 +82,10 @@ export class ParticleEmitter implements Entity{
     private startOpacity: number;
     private endOpacity: number;
     private fadeInTime: number;
+    private amount: number;
 
     constructor(params: EmitterParams) {
+        this.amount = params.amount;
         this.velocity = params.velocity;
         this.texture = new TextureLoader().load(params.textureURL);
         this.maxAge = params.maxAge;
@@ -111,7 +114,7 @@ export class ParticleEmitter implements Entity{
             return p.age < this.maxAge;
         });
 
-        if (this.i++ % 10 == 0) {
+        if (this.i++ % this.amount == 0) {
             let velocity = this.velocity.clone();
             velocity.applyAxisAngle(new Vector3(0, 0, 1), this.angle * (Math.random()-0.5));
             velocity.applyAxisAngle(new Vector3(1, 0, 0), this.angle * (Math.random()-0.5));
