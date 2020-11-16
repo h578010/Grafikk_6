@@ -30,7 +30,13 @@ export class Stones implements Entity {
 
         }
         const sprite = new THREE.TextureLoader().load('./resources/stone.png');
-        const material = new THREE.PointsMaterial({ size: 1.5, sizeAttenuation: true, map: sprite, alphaTest: 0.5, transparent: true });
+        const material = new THREE.PointsMaterial({
+            size: 1.5,
+            sizeAttenuation: true,
+            map: sprite,
+            alphaTest: 0.5,
+            transparent: true
+        });
         // material.color.setRGB(0.5, 0.5, 0.5);
         const geometry = new THREE.BufferGeometry();
 
@@ -43,55 +49,4 @@ export class Stones implements Entity {
     update() {
 
     }
-
-
-    //     const stoneClone = stone.clone();
-
-    //     stoneClone.traverse((child: any) =>{
-    //         if (child.isMesh) {
-    //             child.castShadow = true;
-    //             child.receiveShadow = true;
-    //         }
-    //     });
-
-    //     stoneClone.position.x = x;
-    //     stoneClone.position.y = y - 0.4;
-    //     stoneClone.position.z = z;
-
-    //     stoneClone.rotation.y = Math.random() * (2 * Math.PI);
-    //     stoneClone.scale.multiplyScalar(1.5 + Math.random() * 1);
-    //     this.object.add(stoneClone);
-    // }
-
-
-
-
-    // const material = new THREE.MeshPhongMaterial();
-    // const texture = new THREE.TextureLoader().load('/resources/stone.png');
-    // material.map = texture;
-
-    // const displacementMap = new THREE.TextureLoader().load('/resources/stone_heightmap.png');
-    // material.displacementMap = displacementMap;
-
-    // const plane = new THREE.Mesh(PlaneGeometry, material);
-    // scene.add(plane);
-
-
-
-    // const textureBump = () => {
-    //     let texture1 = new THREE.TextureLoader().load('/resources/stone3.jpg');
-    //     let texture2 = new THREE.TextureLoader().load('/resources/stone1.jpg');
-    //     let geometry = new THREE.BoxGeometry(10, 10, 10, 30, 30, 30);
-    //     let material = new THREE.MeshPhongMaterial({
-    //         map: texture2,
-    //         bumpMap: texture1,
-    //         bumpScale: 0.3
-    //     });
-
-    //     const boxMesh = new THREE.Mesh(geometry, material);
-    //     this.scene.add(boxMesh);
-    // }
-
-
-
 }
