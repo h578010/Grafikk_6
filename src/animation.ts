@@ -48,6 +48,7 @@ class Animation {
 
         let self = this;
 
+        // Raycaster that moves around a unicorn in the scene:
         const raycaster = new THREE.Raycaster();
         const onclick = function (event: any) {
             if (self.uniEnabled) {
@@ -63,22 +64,28 @@ class Animation {
         }
         window.addEventListener('click', onclick, false);
 
+        // Skybox:
         new Skybox(this.scene);
         let sun = new Sun();
         this.addEntity(sun);
 
+        // Light:
         let light = new AmbientLight('0xffffff', 0.6);
         this.scene.add(light);
 
+        // Lava:
         let lava = new Lava();
         this.addEntity(lava);
 
+        // Animated bat flying around the volcano:
         let bat = new Bat()
         this.addEntity(bat);
 
+        // A rock with bumpmap/normalmap:
         let rock = new Rock();
         this.addEntity(rock);
 
+        // Unicorn:
         this.unicorn = new Unicorn();
         this.addEntity(this.unicorn);
 
@@ -104,7 +111,7 @@ class Animation {
             this.uniEnabled = uni;
         });
 
-        // Add smoke from the vulcano:
+        // Smoke from the vulcano:
         const smoke = new ParticleEmitter({
             amount: 10,
             velocity: new Vector3(0, 1, 0),
@@ -121,9 +128,9 @@ class Animation {
         });
         this.addEntity(smoke);
 
-        // Add sparks from the lava:
+        // Sparks from the lava:
         const sparks = new ParticleEmitter({
-            amount: 100,
+            amount: 50,
             velocity: new Vector3(0, 50, 0),
             textureURL: './resources/Particles/spark.png',
             pos: new Vector3(-2, 6, 0),
@@ -138,7 +145,7 @@ class Animation {
         sparks.object.scale.z = 0.4;
         this.addEntity(sparks);
 
-        // Add ash rain:
+        // Ash erupting from the volcano:
         const ash = new ParticleEmitter({
             amount: 1,
             velocity: new Vector3(0, 2, 0),
@@ -170,12 +177,14 @@ class Animation {
         window.requestAnimationFrame(this.loop);
     }
 
+    // Function for moving the unicorn with the raycaster:
     moveUnicorn(point: Vector3) {
         this.unicorn.object.position.x = point.x;
         this.unicorn.object.position.y = point.y;
         this.unicorn.object.position.z = point.z;
     }
 
+    // Function for adding terrain to the scene:
     async addTerrain() {
         const heightmapImage = await Utilities.loadImage('resources/volcano.png');
         const width = 100;
@@ -213,6 +222,7 @@ class Animation {
         backgroundMesh.rotateX(-Math.PI / 2);
         backgroundMesh.translateZ(-4.8);
 
+        // GLTF loader for trees:
         const loader = new GLTFLoader();
         let self = this;
         loader.load('./resources/Trees/scene.gltf', function (gltf) {
@@ -227,18 +237,22 @@ class Animation {
             self.addEntity(trees);
         });
 
+        // Adding grass:
         let grass = new Grass(terrainGeometry, 10000, 1);
         self.addEntity(grass);
 
+        // Adding stones:
         let stones = new Stones(terrainGeometry, 100, 1);
         self.addEntity(stones);
     }
 
+    // Function for adding entities to the scene:
     addEntity(entity: Entity) {
         this.scene.add(entity.object);
         this.entities.push(entity);
     }
 
+    // Draw function:
     draw(time: number) {
         this.renderer.render(this.scene, this.camera);
         this.entities.forEach((e) => {
