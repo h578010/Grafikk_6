@@ -17,6 +17,7 @@ import { Stones } from './terrain/Stones';
 import { ParticleEmitter } from './particleEmitter';
 import Bat from './bat';
 import Unicorn from './unicorn';
+import Dino from './dino';
 import Rock from './terrain/Rock';
 
 class Animation {
@@ -26,7 +27,8 @@ class Animation {
     private loop: (timestamp: number) => void;
     private entities: Entity[] = [];
     private controller: Controller;
-    private unicorn: Unicorn;
+    //private unicorn: Unicorn;
+    private dino: Dino;
     private uniEnabled = false;
 
     constructor() {
@@ -86,8 +88,13 @@ class Animation {
         this.addEntity(rock);
 
         // Unicorn:
-        this.unicorn = new Unicorn();
-        this.addEntity(this.unicorn);
+        //this.unicorn = new Unicorn();
+        //this.addEntity(this.unicorn);
+
+        // Dino:
+        this.dino = new Dino();
+        this.addEntity(this.dino);
+
 
         // Button for fog and raycaster:
         const params = {
@@ -179,9 +186,12 @@ class Animation {
 
     // Function for moving the unicorn with the raycaster:
     moveUnicorn(point: Vector3) {
-        this.unicorn.object.position.x = point.x;
-        this.unicorn.object.position.y = point.y;
-        this.unicorn.object.position.z = point.z;
+        //this.unicorn.object.position.x = point.x;
+        //this.unicorn.object.position.y = point.y;
+        //this.unicorn.object.position.z = point.z;
+        this.dino.object.position.x = point.x;
+        this.dino.object.position.y = point.y;
+        this.dino.object.position.z = point.z;
     }
 
     // Function for adding terrain to the scene:
