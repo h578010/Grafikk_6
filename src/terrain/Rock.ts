@@ -35,25 +35,25 @@ export class Rock implements Entity {
 
             let rockTexture = new TextureLoader().load('./resources/Rock2/rock/rock_base.jpg');
             
-            // OBJLoader returns a object with children
-            obj.traverse(function (child) {
-                if (child instanceof Mesh) {
-                    child.material.map = rockTexture;
-                }
-            });
-            this.object.add(obj);
-
             // let rockBumpMap = new TextureLoader().load('./resources/Rock2/rock/Rock_normal.jpg');
             let rockMaterial = new MeshStandardMaterial({
                 map: rockTexture,
                 color: 0xffffff,
                 roughness: 0.9,
-                // bumpMap: new TextureLoader().load('/resources/Rock2/rock/Rock_normal.jpg'),
-                // bumpScale: 100
+                bumpMap: new TextureLoader().load('/resources/Rock2/rock/Rock_normal.jpg'),
+                bumpScale: 100
             });
 
             rockMaterial.bumpMap = new TextureLoader().load('/resources/Rock2/rock/Rock_normal.jpg');
             rockMaterial.bumpScale = 1000;
+            // OBJLoader returns a object with children
+            obj.traverse(function (child) {
+                if (child instanceof Mesh) {
+                    child.material = rockMaterial;
+                }
+            });
+            this.object.add(obj);
+            
         });
         
     }
