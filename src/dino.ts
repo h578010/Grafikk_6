@@ -14,7 +14,7 @@ constructor() {
     loader.load('resources/dino/scene.gltf', (gltf) => {
 
         this.object.add(gltf.scene);
-        this.object.scale.multiplyScalar(0.45);
+        this.object.scale.multiplyScalar(0.2);
         console.log(gltf.animations);
         this.mixer = new AnimationMixer(gltf.scene);
         const clip = AnimationClip.findByName(gltf.animations, 'Take 01' );

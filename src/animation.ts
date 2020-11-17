@@ -190,7 +190,7 @@ class Animation {
         //this.unicorn.object.position.y = point.y;
         //this.unicorn.object.position.z = point.z;
         this.dino.object.position.x = point.x;
-        this.dino.object.position.y = point.y;
+        this.dino.object.position.y = point.y-1;
         this.dino.object.position.z = point.z;
     }
 
