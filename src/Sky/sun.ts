@@ -1,5 +1,5 @@
 
-import { Mesh, MeshBasicMaterial, Object3D, PointLight, SphereGeometry, TextureLoader } from 'three';
+import { DirectionalLight, Mesh, MeshBasicMaterial, Object3D, PointLight, SphereGeometry, TextureLoader } from 'three';
 import Entity from '../entity';
 
 class Sun implements Entity { 
@@ -16,7 +16,7 @@ constructor() {
     this.object.position.y = 80;
     this.object.position.z = -10;
 
-    let sunlight = new PointLight(0xffffff, 1.5);
+    let sunlight = new DirectionalLight(0xffffff, 1.5);
     sunlight.castShadow = true; 
     sunlight.shadow.mapSize.width = 2048; // default
     sunlight.shadow.mapSize.height = 2048; // default   
