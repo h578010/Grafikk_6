@@ -25,7 +25,7 @@ export class Trees implements Entity {
             while (y >= limit) {
                 x = -100 + Math.random() * 200;
                 z = -100 + Math.random() * 200;
-                y = terrainBufferGeometry.getHeightAt(x, z);
+                y = terrainBufferGeometry.getHeightAt(x, z) - 0.5;
             }
             const treeClone = tree.clone();
 
