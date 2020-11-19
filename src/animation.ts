@@ -196,10 +196,10 @@ class Animation {
         grassTexture.wrapT = RepeatWrapping;
         grassTexture.repeat.set(5000 / width, 5000 / width);
 
-        const snowyRockTexture = new TextureLoader().load('resources/rock_02.png');
-        snowyRockTexture.wrapS = RepeatWrapping;
-        snowyRockTexture.wrapT = RepeatWrapping;
-        snowyRockTexture.repeat.set(1500 / width, 1500 / width);
+        const rockTexture = new TextureLoader().load('resources/rock_02.png');
+        rockTexture.wrapS = RepeatWrapping;
+        rockTexture.wrapT = RepeatWrapping;
+        rockTexture.repeat.set(1500 / width, 1500 / width);
 
         const splatMap = new TextureLoader().load('resources/volcano.png');
 
@@ -208,7 +208,7 @@ class Animation {
         backgroundTexture.wrapT = RepeatWrapping;
         backgroundTexture.repeat.set(25000 / width, 25000 / width);
 
-        const terrainMaterial = new TextureSplattingMaterial(0x999999, 0, [grassTexture, snowyRockTexture], [splatMap]);
+        const terrainMaterial = new TextureSplattingMaterial(0x999999, 0, [grassTexture, rockTexture], [splatMap]);
         const grassMaterial = new MeshPhongMaterial({ map: backgroundTexture, color: 0x999999 });
 
         const terrainMesh = new Mesh(terrainGeometry, terrainMaterial);
