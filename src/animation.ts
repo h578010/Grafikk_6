@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import Skybox from './skybox'
+import Skybox from './Sky/skybox'
 import Entity from './entity'
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
@@ -12,11 +12,11 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Grass } from './terrain/Grass';
 import { Lava } from './terrain/Lava';
 import * as dat from 'dat.gui';
-import Sun from './sun';
+import Sun from './Sky/sun';
 import { Stones } from './terrain/Stones';
 import { ParticleEmitter } from './particleEmitter';
-import Bat from './bat';
-import Dino from './dino';
+import Bat from './models/bat';
+import Dino from './models/dino';
 import Rock from './terrain/Rock';
 
 class Animation {
