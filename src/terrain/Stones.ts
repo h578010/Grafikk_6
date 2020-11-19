@@ -15,8 +15,6 @@ export class Stones implements Entity {
         this.limit = limit;
         const vertices = [];
 
-        // this.object = new Group();
-
         for (let i = 0; i < count; i++) {
             let y = limit;
             let x = 0;
@@ -37,7 +35,7 @@ export class Stones implements Entity {
             alphaTest: 0.5,
             transparent: true
         });
-        // material.color.setRGB(0.5, 0.5, 0.5);
+
         const geometry = new THREE.BufferGeometry();
 
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));

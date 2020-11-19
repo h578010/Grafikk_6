@@ -17,8 +17,7 @@ export class Rock implements Entity {
             this.object.rotation.z = 40;
 
             let rockTexture = new TextureLoader().load('./resources/Rock2/rock/rock_base.jpg');
-            
-            // let rockBumpMap = new TextureLoader().load('./resources/Rock2/rock/Rock_normal.jpg');
+
             let rockMaterial = new MeshStandardMaterial({
                 map: rockTexture,
                 color: 0xffffff,
@@ -34,9 +33,9 @@ export class Rock implements Entity {
                 }
             });
             this.object.add(obj);
-            
+
         });
-        
+
     }
     update() {
 
