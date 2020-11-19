@@ -3,7 +3,7 @@ import Skybox from './Sky/skybox'
 import Entity from './entity'
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
-import { AmbientLight, Group, Mesh, MeshBasicMaterial, PlaneBufferGeometry, RepeatWrapping, TextureLoader, Vector3 } from 'three';
+import { AmbientLight, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial, PlaneBufferGeometry, RepeatWrapping, TextureLoader, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
 import TextureSplattingMaterial from './terrain/SplattingMaterial';
 import { Controller } from './controls/controller';
@@ -70,7 +70,7 @@ class Animation {
         this.addEntity(sun);
 
         // Light:
-        let light = new AmbientLight('0xffffff', 0.6);
+        let light = new AmbientLight('0xffffff', 0.2);
         this.scene.add(light);
 
         // Lava:
@@ -209,7 +209,7 @@ class Animation {
         backgroundTexture.repeat.set(25000 / width, 25000 / width);
 
         const terrainMaterial = new TextureSplattingMaterial(0x999999, 0, [grassTexture, snowyRockTexture], [splatMap]);
-        const grassMaterial = new MeshBasicMaterial({ map: backgroundTexture });
+        const grassMaterial = new MeshPhongMaterial({ map: backgroundTexture, color: 0x999999 });
 
         const terrainMesh = new Mesh(terrainGeometry, terrainMaterial);
         const backgroundMesh = new Mesh(bacgroundGeometry, grassMaterial);

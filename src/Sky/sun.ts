@@ -17,6 +17,17 @@ constructor() {
     this.object.position.z = -10;
 
     let sunlight = new DirectionalLight(0xffffff, 1.5);
+    const targetObject = new Object3D();
+    sunlight.target = targetObject;
+    sunlight.add(targetObject);
+    sunlight.shadow.camera.left = - 400;
+    sunlight.shadow.camera.right = 400;
+    sunlight.shadow.camera.top = 400;
+    sunlight.shadow.camera.bottom = -400;
+
+    targetObject.position.x = -5;
+    targetObject.position.y = -128;
+    targetObject.position.z = -128;
     sunlight.castShadow = true; 
     sunlight.shadow.mapSize.width = 2048; // default
     sunlight.shadow.mapSize.height = 2048; // default   
