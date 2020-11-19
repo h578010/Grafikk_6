@@ -6,8 +6,6 @@ class Sun implements Entity {
     public object: Object3D;
 
 constructor() {
-
-    this.object = new Object3D();
     let sunGeometry = new SphereGeometry(5, 128, 128);
     let sunTaxture = new TextureLoader().load('resources/sky/texture_sun.jpg');
     let sunMaterial = new MeshBasicMaterial({map: sunTaxture});
