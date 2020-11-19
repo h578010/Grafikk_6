@@ -3,7 +3,7 @@ import Skybox from './Sky/skybox'
 import Entity from './entity'
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
-import { AmbientLight, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial, PlaneBufferGeometry, RepeatWrapping, TextureLoader, Vector3 } from 'three';
+import { AmbientLight, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial, PCFSoftShadowMap, PlaneBufferGeometry, RepeatWrapping, TextureLoader, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
 import TextureSplattingMaterial from './terrain/SplattingMaterial';
 import { Controller } from './controls/controller';
@@ -40,7 +40,7 @@ class Animation {
         this.renderer.setSize(width, height);
         this.renderer.setClearColor(0x202050, 1);
         this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.shadowMap.type = PCFSoftShadowMap;
 
         this.controller = new Controller(this.camera, this.renderer.domElement);
 
