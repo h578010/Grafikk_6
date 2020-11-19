@@ -8,7 +8,7 @@ class Bat implements Entity {
 
 constructor() {
 
-    this.object = new Object3D();
+    this.object = new Group();
 
     let loader = new GLTFLoader();
     loader.load('resources/bat/scene.gltf', (gltf) => {
@@ -20,13 +20,17 @@ constructor() {
         gltf.scene.position.y = 5;
         gltf.scene.position.z = 10;
         gltf.scene.rotation.y = Math.PI/2;
-        console.log(gltf.animations);
+
         this.mixer = new AnimationMixer(gltf.scene);
         const clip = AnimationClip.findByName(gltf.animations, 'ArmatureAction' );
         const action = this.mixer.clipAction( clip );
         action.play();
-        //ArmatureAction
-       // idleAction.play();
+
+        gltf.scene.traverse((child) => {
+            if (child instanceof Mesh) {
+                child.castShadow = true;
+            }
+        });
     });
 
     }
@@ -36,11 +40,6 @@ constructor() {
         }
         this.object.rotation.y += 0.02;
     }
-    /*rotateObject(object: Object3D, rotation: number[]) {
-        object.rotation.x += rotation[0];
-        object.rotation.y += rotation[1];
-        object.rotation.z += rotation[2];
-    }*/
 }
 
 export default Bat;

@@ -15,13 +15,16 @@ constructor() {
 
         this.object.add(gltf.scene);
         this.object.scale.multiplyScalar(0.2);
-        console.log(gltf.animations);
         this.mixer = new AnimationMixer(gltf.scene);
         const clip = AnimationClip.findByName(gltf.animations, 'Take 01' );
         const action = this.mixer.clipAction( clip );
         action.play();
-        //ArmatureAction
-        //idleAction.play();
+
+        gltf.scene.traverse((child) => {
+            if (child instanceof Mesh) {
+                child.castShadow = true;
+            }
+        });
     });
 
     }
@@ -30,11 +33,6 @@ constructor() {
             this.mixer.update(delta/1000);
         }
     }
-    /*rotateObject(object: Object3D, rotation: number[]) {
-        object.rotation.x += rotation[0];
-        object.rotation.y += rotation[1];
-        object.rotation.z += rotation[2];
-    }*/
 }
 
 export default Dino;
