@@ -3,7 +3,7 @@ import Skybox from './skybox'
 import Entity from './entity'
 import Utilities from './lib/Utilities';
 import TerrainBufferGeometry from './terrain/TerrainBufferGeometry';
-import { AmbientLight, ByteType, Group, Material, Mesh, MeshBasicMaterial, MeshLambertMaterial, PCFSoftShadowMap, PlaneBufferGeometry, PointLight, RepeatWrapping, SphereGeometry, TextureLoader, Vector3 } from 'three';
+import { AmbientLight, Group, Mesh, MeshBasicMaterial, PlaneBufferGeometry, RepeatWrapping, TextureLoader, Vector3 } from 'three';
 import MouseLookController from './controls/mouselookcontroller';
 import TextureSplattingMaterial from './terrain/SplattingMaterial';
 import { Controller } from './controls/controller';
@@ -16,7 +16,6 @@ import Sun from './sun';
 import { Stones } from './terrain/Stones';
 import { ParticleEmitter } from './particleEmitter';
 import Bat from './bat';
-import Unicorn from './unicorn';
 import Dino from './dino';
 import Rock from './terrain/Rock';
 
@@ -27,9 +26,8 @@ class Animation {
     private loop: (timestamp: number) => void;
     private entities: Entity[] = [];
     private controller: Controller;
-    //private unicorn: Unicorn;
     private dino: Dino;
-    private uniEnabled = false;
+    private modellEnabled = false;
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -50,17 +48,17 @@ class Animation {
 
         let self = this;
 
-        // Raycaster that moves around a unicorn in the scene:
+        // Raycaster that moves around a modell in the scene:
         const raycaster = new THREE.Raycaster();
         const onclick = function (event: any) {
-            if (self.uniEnabled) {
+            if (self.modellEnabled) {
                 let x = (event.clientX / window.innerWidth) * 2 - 1;
                 let y = - (event.clientY / window.innerHeight) * 2 + 1;
                 raycaster.setFromCamera(new THREE.Vector2(x, y), self.camera);
                 const intersects = raycaster.intersectObjects(self.scene.children);
                 if (intersects.length > 0) {
                     let point = intersects[0].point;
-                    self.moveUnicorn(point);
+                    self.moveModel(point);
                 }
             }
         }
@@ -87,19 +85,14 @@ class Animation {
         let rock = new Rock();
         this.addEntity(rock);
 
-        // Unicorn:
-        //this.unicorn = new Unicorn();
-        //this.addEntity(this.unicorn);
-
         // Dino:
         this.dino = new Dino();
         this.addEntity(this.dino);
 
-
         // Button for fog and raycaster:
         const params = {
             enableFog: false,   
-            enableUni: false
+            enableModel: false
         };
         const gui = new dat.GUI();
         let fogController = gui.add(params, 'enableFog').name('Enable fog');
@@ -113,9 +106,9 @@ class Animation {
                 this.scene.fog = null;
             }
         });
-        let uniController = gui.add(params, 'enableUni').name('Enable raycaster');
-        uniController.onChange((uni) => {
-            this.uniEnabled = uni;
+        let modelController = gui.add(params, 'enableModel').name('Enable raycaster');
+        modelController.onChange((mod) => {
+            this.modellEnabled = mod;
         });
 
         // Smoke from the vulcano:
@@ -184,11 +177,8 @@ class Animation {
         window.requestAnimationFrame(this.loop);
     }
 
-    // Function for moving the unicorn with the raycaster:
-    moveUnicorn(point: Vector3) {
-        //this.unicorn.object.position.x = point.x;
-        //this.unicorn.object.position.y = point.y;
-        //this.unicorn.object.position.z = point.z;
+    // Function for moving the modell with the raycaster:
+    moveModel(point: Vector3) {
         this.dino.object.position.x = point.x;
         this.dino.object.position.y = point.y-1;
         this.dino.object.position.z = point.z;
