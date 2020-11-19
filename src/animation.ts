@@ -27,7 +27,7 @@ class Animation {
     private entities: Entity[] = [];
     private controller: Controller;
     private dino: Dino;
-    private modellEnabled = false;
+    private modelEnabled = false;
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -51,7 +51,7 @@ class Animation {
         // Raycaster that moves around a modell in the scene:
         const raycaster = new THREE.Raycaster();
         const onclick = function (event: any) {
-            if (self.modellEnabled) {
+            if (self.modelEnabled) {
                 let x = (event.clientX / window.innerWidth) * 2 - 1;
                 let y = - (event.clientY / window.innerHeight) * 2 + 1;
                 raycaster.setFromCamera(new THREE.Vector2(x, y), self.camera);
@@ -108,7 +108,7 @@ class Animation {
         });
         let modelController = gui.add(params, 'enableModel').name('Enable raycaster');
         modelController.onChange((mod) => {
-            this.modellEnabled = mod;
+            this.modelEnabled = mod;
         });
 
         // Smoke from the vulcano:
@@ -180,7 +180,7 @@ class Animation {
     // Function for moving the modell with the raycaster:
     moveModel(point: Vector3) {
         this.dino.object.position.x = point.x;
-        this.dino.object.position.y = point.y-1;
+        this.dino.object.position.y = point.y;
         this.dino.object.position.z = point.z;
     }
 
